@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>GCD Tasks</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F4F2EE;
+    --surface: #FFFFFF;
+    --surface2: #F9F8F6;
+    --border: rgba(0,0,0,0.08);
+    --text: #1A1A1A;
+    --text2: #6B6560;
+    --text3: #A09890;
+    --accent: #2D5BE3;
+    --danger: #E03535;
+    --done: #3A9E6F;
+    --done-bg: #EDF7F2;
+    --urgent-bg: #FEF2F2;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Manrope', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    padding-bottom: 90px;
+  }
+
+  /* Header */
+  .header {
+    background: var(--surface);
+    padding: 20px 20px 0;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .app-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .date-badge {
+    font-size: 12px;
+    color: var(--text3);
+    background: var(--bg);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* Person tabs scroll */
+  .tabs-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 14px;
+    scrollbar-width: none;
+  }
+  .tabs-scroll::-webkit-scrollbar { display: none; }
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    flex-shrink: 0;
+    padding: 2px 4px 0;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .tab.active { border-bottom-color: var(--accent); }
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+  }
+  .tab.active .avatar { border-color: var(--accent); }
+  .tab-name { font-size: 10px; color: var(--text3); font-weight: 500; }
+  .tab.active .tab-name { color: var(--accent); }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    gap: 10px;
+    padding: 14px 20px;
+  }
+  .stat {
+    flex: 1;
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .stat-num { font-size: 22px; font-weight: 700; }
+  .stat-num.done { color: var(--done); }
+  .stat-num.urgent { color: var(--danger); }
+  .stat-label { font-size: 11px; color: var(--text3); font-weight: 500; }
+
+  /* Task list */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 4px 20px 8px;
+  }
+  .tasks { padding: 0 14px; display: flex; flex-direction: column; gap: 8px; }
+
+  .task {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    transition: all 0.25s;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .task.urgent { background: var(--urgent-bg); border-color: rgba(224,53,53,0.15); }
+  .task.done-task { background: var(--done-bg); border-color: rgba(58,158,111,0.15); opacity: 0.7; }
+  .task:active { transform: scale(0.98); }
+
+  .check-wrap {
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .checkmark {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    background: var(--surface);
+  }
+  .task.done-task .checkmark {
+    background: var(--done);
+    border-color: var(--done);
+  }
+  .task.urgent:not(.done-task) .checkmark { border-color: rgba(224,53,53,0.4); }
+  .check-icon {
+    display: none;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .task.done-task .check-icon { display: block; }
+
+  .task-body { flex: 1; min-width: 0; }
+  .task-text {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .task.done-task .task-text {
+    text-decoration: line-through;
+    color: var(--text3);
+  }
+  .task-footer { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .tag-proto { background: #EEF3FF; color: #2D5BE3; }
+  .tag-deadline { background: #FEF7ED; color: #B45309; }
+  .tag-urgent-lbl { background: #FEF2F2; color: #B91C1C; }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 10px 20px 24px;
+    gap: 8px;
+  }
+  .filter-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .filter-btn:active { transform: scale(0.97); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #1A1A1A;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 30px;
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 200;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .empty { text-align: center; color: var(--text3); font-size: 14px; padding: 40px 20px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <span class="app-title">GCD Tasks</span>
+    <span class="date-badge">22.04.2026</span>
+  </div>
+  <div class="tabs-scroll" id="tabs"></div>
+</div>
+
+<div class="stats-bar" id="statsBar"></div>
+
+<div id="sectionLabel" class="section-label"></div>
+<div class="tasks" id="taskList"></div>
+
+<div class="bottom-nav">
+  <button class="filter-btn active" onclick="setFilter('all', this)">Все</button>
+  <button class="filter-btn" onclick="setFilter('urgent', this)">Срочные 🔴</button>
+  <button class="filter-btn" onclick="setFilter('pending', this)">Открытые</button>
+  <button class="filter-btn" onclick="setFilter('done', this)">Готово ✓</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const people = [
+  { initials:"АП", name:"Александра Петрова", color:"#D6E8F7", textColor:"#1A5A9A",
+    tasks:[
+      {t:"Взять 2 пациента до конца апреля",p:"MMH-407-012 РАФАМИН ГП4",d:"30.04",u:false},
+      {t:"Трудоустройство Анастасии в ГП 112, обсудить с ней и с ГВ",p:"РАФАМИН ГП112",d:"29.04",u:false},
+      {t:"Доехать до Напольской (перенос с 13–17.04)",p:"GNR107-CRC01",d:"29.04",u:true},
+      {t:"Согласовать ВЗ (3ГП и 4ГП)",p:"MMH-407-007",d:"",u:false},
+      {t:"Подготовить документы к архивации (3ГП, 4ГП) к визиту завершения",p:"MMH-407-007",d:"",u:false},
+      {t:"Провести ревизию архивации протоколов с 2023 (4ГП)",p:"MMH-407-007",d:"",u:false},
+      {t:"Получить и подписать акты на ЛПУ",p:"MMH-407-007",d:"",u:false},
+      {t:"Написать письмо от имени ГИ о целесообразности участия ИЦ",p:"иФарма Лейкоз",d:"",u:false},
+      {t:"Согласовать договор на учреждение (Мабскейл PERT III)",p:"Мабскейл PERT III",d:"29.04",u:false},
+      {t:"Связаться со спонсором ПРОМОМЕД (меланома)",p:"ПРОМОМЕД",d:"",u:false},
+      {t:"Заполнить журнал КИ",p:"Биннофарм",d:"",u:false},
+      {t:"Совещание по набору",p:"Биннофарм",d:"29.04",u:false},
+      {t:"Реестр КИ — обновлять еженедельно по понедельникам",p:"Задачи",d:"Еженедельно",u:false},
+      {t:"Заполнение рабочих трекеров активности и нагрузки",p:"Задачи",d:"Ежедневно",u:false},
+      {t:"Финализировать ИПР и отправить МФ",p:"Задачи",d:"24.04",u:true},
+      {t:"Проверить и обновить наименования документов в общей папке",p:"Задачи",d:"28.04",u:false},
+      {t:"Работа с файловым хранилищем (сбор договоров и актов)",p:"Задачи",d:"",u:false},
+      {t:"Трекеры пациентов в формате Excel — стандартизировать",p:"Задачи",d:"",u:false},
+    ]},
+  { initials:"АН", name:"Александра Наумова", color:"#D5F0E8", textColor:"#0A6644",
+    tasks:[
+      {t:"Подписать ДС (НОКБ)",p:"MIT-005/1",d:"",u:false},
+      {t:"Поехать в центр (НОКБ) перед МВ в начале мая",p:"MIT-005/1",d:"",u:false},
+      {t:"Свести оплаты до конца апреля",p:"GNR107-CRC01",d:"30.04",u:true},
+      {t:"Выполнить архивацию ГП112 — ПРОСРОЧЕНО",p:"GP40261",d:"31.03",u:true},
+      {t:"Согласовать ВЗ (АБИА и 112ГП)",p:"MMH-407-007",d:"",u:false},
+      {t:"Подготовить документы к архивации (АБИА, 112ГП)",p:"MMH-407-007",d:"",u:false},
+      {t:"Уточнить, где деньги (АБИА)",p:"MMH-407-007",d:"",u:false},
+      {t:"Составить смету (Акселлена НАЖБП МЮ)",p:"Акселлена НАЖБП",d:"",u:false},
+      {t:"Сделать разбивку для договоров (Акселлена НАЖБП МЮ)",p:"Акселлена НАЖБП",d:"",u:false},
+      {t:"Ответить на запрос по обновлённым критериям (Smooth/GCT)",p:"Smooth/GCT",d:"",u:false},
+      {t:"Уточнить у Сороки и Кондратьева о популяции детей с ПЦД",p:"Генериум педиатрия",d:"",u:false},
+      {t:"Сделать отдельную папку на ДПО в папке ГП 4 — ПРОСРОЧЕНО",p:"Задачи",d:"18.03",u:true},
+      {t:"Заполнение рабочих трекеров — ежедневно",p:"Задачи",d:"Ежедневно",u:false},
+      {t:"Финализировать ИПР и отправить МФ",p:"Задачи",d:"24.04",u:true},
+      {t:"Проверить и обновить наименования документов в общей папке",p:"Задачи",d:"28.04",u:false},
+    ]},
+  { initials:"АнО", name:"Андрей Олехвер", color:"#FAE0E8", textColor:"#8B1A3A",
+    tasks:[
+      {t:"Внести в ИРК визиты Стриги, подключить вводчика — ПРОСРОЧЕНО",p:"ETA III (Псориаз)",d:"19.04",u:true},
+      {t:"Финальный договор по рентгену и УЗИ (МЮ и СМТ) — ПРОСРОЧЕНО",p:"MIT-005/1",d:"20.04",u:true},
+      {t:"Сделать журнал выплат пациентам — ПРОСРОЧЕНО",p:"MIT-005/1",d:"17.04",u:true},
+      {t:"Дозаполнить логи в ФИ (РАФАМИН ДЕТИ ГП3)",p:"MMH-407-010",d:"",u:false},
+      {t:"Внести всё в ИРК (GP30931 МЮ) — ПРОСРОЧЕНО",p:"GP30931",d:"17.04",u:true},
+      {t:"Ввод данных GP30931 МЮ",p:"GP30931",d:"29.04",u:true},
+      {t:"Внести в ИРК невнесённое (Тирзепатид ГП3)",p:"GP30931 ГП3",d:"",u:false},
+      {t:"Доделать договор аренды оборудования ГП4–ГП3 — ПРОСРОЧЕНО",p:"GP30931",d:"03.03",u:true},
+      {t:"Разобраться с утилизацией Тресиба (Деглудек МЮ)",p:"GP40131",d:"",u:false},
+      {t:"Купить градусник",p:"GP40331",d:"",u:false},
+      {t:"Вести контроль даты подачи (BCD-261-4/ULTRAMARINE)",p:"BCD-261-4",d:"",u:false},
+      {t:"Вести контроль даты подачи (BCD-261-2/COMANDOR)",p:"BCD-261-2",d:"",u:false},
+      {t:"Обновить статус по подаче в МЗ (Smooth/GCT Меронем)",p:"Smooth/GCT",d:"",u:false},
+      {t:"Связаться с CRO Аксон (Фармасофт)",p:"Потенциальные",d:"",u:false},
+      {t:"Связаться со спонсором Акрихин",p:"Акрихин",d:"",u:false},
+      {t:"Заполнение рабочих трекеров — ежедневно",p:"Задачи",d:"Ежедневно",u:false},
+      {t:"Финализировать ИПР и отправить МФ",p:"Задачи",d:"24.04",u:true},
+      {t:"Проверить и обновить наименования документов",p:"Задачи",d:"28.04",u:false},
+      {t:"Плановая архивация",p:"Задачи",d:"",u:false},
+    ]},
+  { initials:"АО", name:"Александр Окунев", color:"#E8E6FC", textColor:"#3C2FA0",
+    tasks:[
+      {t:"Отправить договор (BCD-085-16/PLANETA-KIDS Кемерово)",p:"BCD-085-16",d:"",u:false},
+      {t:"Выслать акты (GP40331 ГП3 5ДПО)",p:"GP40331",d:"",u:false},
+      {t:"Купить холодовую центрифугу (иФарма Лейкоз НОКБ)",p:"иФарма Лейкоз",d:"",u:false},
+      {t:"Выплата врачам (GP40261 ГП4)",p:"GP40261",d:"24.04",u:true},
+    ]},
+  { initials:"ТВ", name:"Тимур Величков", color:"#FAE8C0", textColor:"#7A4A08",
+    tasks:[
+      {t:"Подготовить акты на уничтожение ИП (Bism-III-2024 МЮ)",p:"Bism-III-2024",d:"",u:false},
+      {t:"Плановая архивация",p:"Задачи",d:"",u:false},
+      {t:"Проверить и обновить наименования документов",p:"Задачи",d:"28.04",u:false},
+    ]},
+  { initials:"СЛ", name:"Светлана Лебедкина", color:"#DDF0C0", textColor:"#2E6A10",
+    tasks:[
+      {t:"Статус ГП3 Тирзепатид (проверка ФИСов, карт, ПД, процессов)",p:"GP30931 ГП3",d:"",u:false},
+      {t:"Связаться с А. Сергиенко ещё раз",p:"SGR-PAL-4-01",d:"",u:false},
+      {t:"Связаться через Оксану (Смуз? Колопроктология)",p:"Потенциальные",d:"",u:false},
+      {t:"Финализировать ИПР и отправить МФ",p:"Задачи",d:"24.04",u:true},
+      {t:"Обучение сотрудников (раз в полгода)",p:"Задачи",d:"Раз в полгода",u:false},
+    ]},
+  { initials:"ВСЕ", name:"Вся команда", color:"#E8E8E4", textColor:"#4A4A44",
+    tasks:[
+      {t:"Работа с файловым хранилищем: сбор договоров и актов по всем протоколам",p:"Задачи",d:"",u:false},
+      {t:"Трекеры пациентов — перевести в Excel и стандартизировать",p:"Задачи",d:"",u:false},
+      {t:"Проверить и обновить наименования документов в общей папке",p:"Задачи",d:"28.04",u:false},
+    ]},
+];
+
+let currentPerson = 0;
+let currentFilter = 'all';
+const doneKey = () => `gcd_done_${currentPerson}`;
+
+function getDone() {
+  try { return JSON.parse(localStorage.getItem(doneKey()) || '[]'); } catch { return []; }
+}
+function saveDone(arr) {
+  try { localStorage.setItem(doneKey(), JSON.stringify(arr)); } catch {}
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function toggleTask(idx) {
+  const done = getDone();
+  const pos = done.indexOf(idx);
+  if (pos === -1) { done.push(idx); showToast('✓ Отмечено выполненным'); }
+  else { done.splice(pos, 1); showToast('Отмечено открытым'); }
+  saveDone(done);
+  render();
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function render() {
+  const p = people[currentPerson];
+  const done = getDone();
+  const tasks = p.tasks;
+
+  // Stats
+  const totalDone = tasks.filter((_, i) => done.includes(i)).length;
+  const urgent = tasks.filter(t => t.u).length;
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat"><span class="stat-num">${tasks.length}</span><span class="stat-label">Всего задач</span></div>
+    <div class="stat"><span class="stat-num done">${totalDone}</span><span class="stat-label">Выполнено</span></div>
+    <div class="stat"><span class="stat-num urgent">${urgent}</span><span class="stat-label">Срочных</span></div>
+  `;
+
+  let filtered = tasks.map((t, i) => ({ ...t, idx: i, isDone: done.includes(i) }));
+  if (currentFilter === 'urgent') filtered = filtered.filter(t => t.u);
+  if (currentFilter === 'pending') filtered = filtered.filter(t => !t.isDone);
+  if (currentFilter === 'done') filtered = filtered.filter(t => t.isDone);
+
+  const labels = { all: 'Все задачи', urgent: 'Срочные задачи', pending: 'Открытые задачи', done: 'Выполненные' };
+  document.getElementById('sectionLabel').textContent = `${labels[currentFilter]} · ${filtered.length}`;
+
+  const list = document.getElementById('taskList');
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty">Нет задач в этом разделе</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map(task => `
+    <div class="task ${task.u && !task.isDone ? 'urgent' : ''} ${task.isDone ? 'done-task' : ''}"
+         onclick="toggleTask(${task.idx})">
+      <div class="check-wrap">
+        <div class="checkmark"><span class="check-icon">✓</span></div>
+      </div>
+      <div class="task-body">
+        <div class="task-text">${task.t}</div>
+        <div class="task-footer">
+          <span class="tag tag-proto">${task.p}</span>
+          ${task.d ? `<span class="tag ${task.u && !task.isDone ? 'tag-urgent-lbl' : 'tag-deadline'}">${task.d}</span>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function buildTabs() {
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = people.map((p, i) => `
+    <div class="tab ${i === 0 ? 'active' : ''}" onclick="selectPerson(${i})">
+      <div class="avatar" style="background:${p.color};color:${p.textColor}">${p.initials}</div>
+      <span class="tab-name">${p.initials}</span>
+    </div>
+  `).join('');
+}
+
+function selectPerson(i) {
+  currentPerson = i;
+  document.querySelectorAll('.tab').forEach((t, idx) => t.classList.toggle('active', idx === i));
+  render();
+}
+
+buildTabs();
+render();
+</script>
+</body>
+</html>
