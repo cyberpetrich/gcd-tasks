@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Журнал визита — GCD</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;background:#F5F5F3;color:#1A1A1A;min-height:100vh;padding:16px}
+h1{font-size:17px;font-weight:600;margin-bottom:2px}
+.subtitle{font-size:12px;color:#888;margin-bottom:16px}
+
+/* TABS */
+.tabs{display:flex;gap:0;margin-bottom:16px;background:#EBEBEA;border-radius:10px;padding:3px;width:fit-content}
+.tab{font-size:13px;font-weight:500;padding:7px 20px;border-radius:8px;border:none;background:transparent;color:#888;cursor:pointer;transition:all .15s}
+.tab.active{background:#fff;color:#1A1A1A;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+.card{background:#fff;border:1px solid #E5E5E3;border-radius:12px;padding:16px 20px;margin-bottom:12px}
+.sec{font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}
+@media(max-width:580px){.sg{grid-template-columns:1fr}}
+.sr{display:flex;align-items:center;gap:8px}
+.sr label{font-size:13px;color:#555;min-width:190px;flex-shrink:0}
+.sr input[type=number]{width:62px;font-size:13px;padding:5px 8px;border-radius:7px;border:1px solid #D5D5D3;background:#FAFAF8;color:#1A1A1A}
+.sr input:focus{outline:none;border-color:#4A90D9}
+
+/* PATIENT ROWS — blood */
+.pr-b{display:grid;grid-template-columns:1fr 100px 76px 28px;gap:8px;align-items:center;margin-bottom:7px}
+/* PATIENT ROWS — ip */
+.pr-i{display:grid;grid-template-columns:1fr 100px 100px 90px 28px;gap:8px;align-items:center;margin-bottom:7px}
+.pr-b input,.pr-i input{font-size:13px;padding:5px 7px;border-radius:7px;border:1px solid #D5D5D3;background:#FAFAF8;color:#1A1A1A;width:100%}
+.pr-b input:focus,.pr-i input:focus{outline:none;border-color:#4A90D9}
+
+.btn-add{font-size:13px;padding:6px 13px;border-radius:8px;border:1px solid #D5D5D3;background:#F5F5F3;color:#333;cursor:pointer;display:inline-flex;align-items:center;gap:5px;margin-top:4px}
+.btn-add:hover{background:#EBEBEA}
+.btn-del{font-size:12px;padding:3px 7px;border-radius:7px;border:1px solid #E5E5E3;background:transparent;color:#AAA;cursor:pointer}
+.btn-del:hover{color:#C0392B;border-color:#F0BDBB;background:#FEF3F2}
+.btn-calc{font-size:14px;padding:8px 20px;border-radius:8px;border:1px solid #4A90D9;background:#EBF4FD;color:#1A5FA0;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.btn-calc:hover{background:#D6EAFA}
+.btn-print{font-size:13px;padding:7px 14px;border-radius:8px;border:1px solid #D5D5D3;background:#F5F5F3;color:#444;cursor:pointer;display:inline-flex;align-items:center;gap:5px;margin-left:8px}
+.btn-print:hover{background:#EBEBEA}
+
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;font-weight:600;color:#888;text-align:left;padding:7px 9px;border-bottom:1px solid #E5E5E3;white-space:nowrap;background:#FAFAF8}
+td{padding:7px 9px;border-bottom:1px solid #F0F0EE;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.chip{display:inline-block;font-family:'SF Mono','Fira Mono',monospace;font-size:12px;padding:2px 6px;border-radius:4px;background:#F0F0EE;border:1px solid #E0E0DE;white-space:nowrap}
+.chip-ok{background:#EDFAF4;color:#1A7A4A;border-color:#9ADCC0}
+.chip-warn{background:#FEF9EC;color:#9A6700;border-color:#F5D87A}
+.chip-err{background:#FEF3F2;color:#C0392B;border-color:#F0BDBB}
+.chip-info{background:#EBF4FD;color:#1A5FA0;border-color:#9AC8F0}
+.chip-shift{display:inline;font-size:11px;padding:1px 5px;border-radius:3px;background:#FEF9EC;color:#9A6700;border:1px solid #F5D87A}
+.sub{font-size:11px;color:#AAA;margin-top:2px}
+.bar-wrap{width:100%;height:8px;background:#EEEEED;border-radius:4px;overflow:hidden;min-width:70px}
+.bar-inner{height:100%;border-radius:4px}
+.grp-sep td{background:#F5F5F3;height:3px;padding:0}
+.grp-hdr td{font-size:11px;color:#777;padding:5px 9px;background:#F5F5F3;font-weight:600}
+.notice{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;border:1px solid;line-height:1.6}
+.notice-warn{background:#FEF9EC;color:#7A5000;border-color:#F5D87A}
+.notice-ok{background:#EDFAF4;color:#145A35;border-color:#9ADCC0}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:#888;margin-top:10px}
+.legend span{display:flex;align-items:center;gap:5px}
+.dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.footer-note{font-size:11px;color:#BBB;margin-top:6px}
+
+/* warm bar with zone */
+.wbar{position:relative;width:100%;height:10px;background:#EEEEED;border-radius:5px;overflow:hidden;min-width:80px}
+.wbar-zone{position:absolute;height:100%;background:#BBEED9;border-radius:0}
+.wbar-mark{position:absolute;top:0;width:2px;height:100%;background:#1A1A1A;opacity:.3}
+
+@media print{
+  body{background:#fff;padding:0}
+  .tabs,.card:has(input),.action-row,.btn-add,.btn-del,.btn-calc,.btn-print{display:none!important}
+  .card{border:1px solid #ccc;break-inside:avoid}
+  .bar-inner,.wbar-zone,.wbar-mark{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<h1>Журнал визита — GCD</h1>
+<p class="subtitle">Планировщик биообразцов и введения ИП</p>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('blood')">🧪 Биообразцы</button>
+  <button class="tab" onclick="switchTab('ip')">💉 Введение ИП</button>
+</div>
+
+<!-- ═══════════════ TAB: BLOOD ═══════════════ -->
+<div class="tab-panel active" id="tab-blood">
+
+  <div class="card" id="b-settings">
+    <p class="sec">Настройки — биообразцы</p>
+    <div class="sg">
+      <div class="sr"><label>Забор до ИП (мин)</label><input type="number" id="b-before" value="10" min="1" max="60"></div>
+      <div class="sr"><label>Отстой мин (мин)</label><input type="number" id="b-rmin" value="20" min="5" max="60"></div>
+      <div class="sr"><label>Отстой макс (мин)</label><input type="number" id="b-rmax" value="30" min="5" max="60"></div>
+      <div class="sr"><label>Центрифуга (мин)</label><input type="number" id="b-cf" value="15" min="5" max="30"></div>
+      <div class="sr"><label>Разлив + наклейки (мин/группа)</label><input type="number" id="b-aliq" value="10" min="2" max="30"></div>
+      <div class="sr"><label>Перемещение в морозилку (мин)</label><input type="number" id="b-move" value="5" min="1" max="20"></div>
+      <div class="sr"><label>Макс. при комн. темп. (мин)</label><input type="number" id="b-max" value="60" min="30" max="120"></div>
+      <div class="sr"><label>Окно группировки (мин)</label><input type="number" id="b-gwin" value="15" min="0" max="30"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="sec">Пациенты</p>
+    <div style="display:grid;grid-template-columns:1fr 100px 76px 28px;gap:8px;margin-bottom:5px">
+      <span style="font-size:11px;color:#888">Пациент</span>
+      <span style="font-size:11px;color:#888">Время ИП</span>
+      <span style="font-size:11px;color:#888">Визит</span>
+      <span></span>
+    </div>
+    <div id="b-plist"></div>
+    <button class="btn-add" onclick="bAddP()">+ Добавить пациента</button>
+  </div>
+
+  <div class="action-row" style="margin-bottom:16px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+    <button class="btn-calc" onclick="bCalc()">▶ Рассчитать</button>
+    <button class="btn-print" onclick="window.print()">🖨 Распечатать</button>
+  </div>
+  <div id="b-result"></div>
+</div>
+
+<!-- ═══════════════ TAB: IP ═══════════════ -->
+<div class="tab-panel" id="tab-ip">
+
+  <div class="card" id="i-settings">
+    <p class="sec">Настройки — введение ИП</p>
+    <div class="sg">
+      <div class="sr"><label>Прогрев мин (мин)</label><input type="number" id="i-wmin" value="15" min="5" max="60"></div>
+      <div class="sr"><label>Прогрев макс (мин)</label><input type="number" id="i-wmax" value="30" min="5" max="60"></div>
+      <div class="sr"><label>Длительность укола (мин)</label><input type="number" id="i-inj" value="2" min="1" max="10"></div>
+      <div class="sr"><label>Окно группировки извлечения (мин)</label><input type="number" id="i-gwin" value="10" min="0" max="30"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="sec">Пациенты</p>
+    <div style="display:grid;grid-template-columns:1fr 100px 100px 90px 28px;gap:8px;margin-bottom:5px">
+      <span style="font-size:11px;color:#888">Пациент</span>
+      <span style="font-size:11px;color:#888">Время IWRS</span>
+      <span style="font-size:11px;color:#888">Время укола</span>
+      <span style="font-size:11px;color:#888">Визит / № уп.</span>
+      <span></span>
+    </div>
+    <div id="i-plist"></div>
+    <button class="btn-add" onclick="iAddP()">+ Добавить пациента</button>
+  </div>
+
+  <div class="action-row" style="margin-bottom:16px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+    <button class="btn-calc" onclick="iCalc()">▶ Рассчитать</button>
+    <button class="btn-print" onclick="window.print()">🖨 Распечатать</button>
+  </div>
+  <div id="i-result"></div>
+</div>
+
+<script>
+/* ── helpers ── */
+function toM(s){const[h,m]=s.split(':').map(Number);return h*60+m}
+function toT(m){return String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
+function esc(s){return(s||'').replace(/"/g,'&quot;')}
+function barCol(p){return p<=70?'#1D9E75':p<=90?'#EF9F27':'#E24B4A'}
+
+/* ── tabs ── */
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['blood','ip'][i]===t));
+  document.querySelectorAll('.tab-panel').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+}
+
+/* ════════════════════════════════
+   BLOOD SAMPLE PLANNER
+════════════════════════════════ */
+let bPts=[], bNid=1;
+function bAddP(n,t,v){bPts.push({id:bNid++,n:n||'',t:t||'',v:v||'В1',shifted:false,shiftedBy:0});bRender()}
+function bRem(id){bPts=bPts.filter(p=>p.id!==id);bRender()}
+function bUp(id,f,v){const p=bPts.find(p=>p.id===id);if(p)p[f]=v}
+function bRender(){
+  const el=document.getElementById('b-plist');
+  if(!bPts.length){el.innerHTML='<p style="font-size:13px;color:#999;margin:0 0 8px">Нет пациентов</p>';return}
+  el.innerHTML=bPts.map(p=>`<div class="pr-b">
+    <input type="text" placeholder="Иванов И.И." value="${esc(p.n)}" oninput="bUp(${p.id},'n',this.value)">
+    <input type="time" value="${esc(p.t)}" oninput="bUp(${p.id},'t',this.value)">
+    <input type="text" placeholder="В1" value="${esc(p.v)}" oninput="bUp(${p.id},'v',this.value)">
+    <button class="btn-del" onclick="bRem(${p.id})">✕</button>
+  </div>`).join('')
+}
+
+function bCalcGroup(grp,cfFree,rMin,cf,aliq,move){
+  const latest=Math.max(...grp.map(p=>p.sampM));
+  const earliest=Math.min(...grp.map(p=>p.sampM));
+  const cfStart=Math.max(latest+rMin,cfFree);
+  const cfEnd=cfStart+cf;
+  const aliqEnd=cfEnd+aliq;
+  const freezeEnd=aliqEnd+move;
+  return{cfStart,cfEnd,aliqEnd,freezeEnd,worstTotal:freezeEnd-earliest};
+}
+
+function bCalc(){
+  const before=+document.getElementById('b-before').value||10;
+  const rMin=+document.getElementById('b-rmin').value||20;
+  const rMax=+document.getElementById('b-rmax').value||30;
+  const cf=+document.getElementById('b-cf').value||15;
+  const aliq=+document.getElementById('b-aliq').value||10;
+  const move=+document.getElementById('b-move').value||5;
+  const maxR=+document.getElementById('b-max').value||60;
+  const gwin=+document.getElementById('b-gwin').value||15;
+
+  const valid=bPts.filter(p=>p.t);
+  if(!valid.length){document.getElementById('b-result').innerHTML='<div style="text-align:center;padding:2rem;color:#999;font-size:13px">Добавьте пациентов и укажите время введения ИП</div>';return}
+
+  const sorted=valid.map(p=>({...p,ipM:toM(p.t),sampM:toM(p.t)-before,shifted:false,shiftedBy:0})).sort((a,b)=>a.sampM-b.sampM);
+
+  const rawGroups=[];let cur=[];
+  for(const p of sorted){
+    if(!cur.length){cur.push(p)}
+    else if(p.sampM-cur[0].sampM<=gwin){cur.push(p)}
+    else{rawGroups.push(cur);cur=[p]}
+  }
+  if(cur.length)rawGroups.push(cur);
+
+  const finalGroups=[];let cfFree=0;const shifts=[];
+  for(const grp of rawGroups){
+    const res=bCalcGroup(grp,cfFree,rMin,cf,aliq,move);
+    if(res.worstTotal<=maxR){finalGroups.push({pts:grp,cfFree});cfFree=res.cfEnd;continue}
+    let remaining=[...grp];
+    while(remaining.length>0){
+      let taken=[];
+      for(let i=0;i<remaining.length;i++){
+        const r2=bCalcGroup([...taken,remaining[i]],cfFree,rMin,cf,aliq,move);
+        if(r2.worstTotal<=maxR){taken=[...taken,remaining[i]]}else{break}
+      }
+      if(taken.length===0){
+        const p=remaining[0];
+        const minSamp=cfFree+cf+aliq+move-maxR;
+        if(minSamp>p.sampM){
+          const delta=minSamp-p.sampM;
+          shifts.push({name:p.n||'пациент',origSamp:p.sampM,newSamp:minSamp,origIP:p.ipM,newIP:p.ipM+delta,delta});
+          p.sampM=minSamp;p.ipM+=delta;p.t=toT(p.ipM);p.shifted=true;p.shiftedBy=delta;
+        }
+        taken=[remaining[0]];
+      }
+      finalGroups.push({pts:taken,cfFree});
+      const r3=bCalcGroup(taken,cfFree,rMin,cf,aliq,move);
+      cfFree=r3.cfEnd;remaining=remaining.slice(taken.length);
+    }
+  }
+
+  const rows=[];let gi=0;
+  for(const fg of finalGroups){
+    gi++;const res=bCalcGroup(fg.pts,fg.cfFree,rMin,cf,aliq,move);
+    for(let pi=0;pi<fg.pts.length;pi++){
+      const p=fg.pts[pi];
+      const restActual=res.cfStart-p.sampM;
+      const totalAtRoom=res.freezeEnd-p.sampM;
+      const pct=Math.round((totalAtRoom/maxR)*100);
+      rows.push({p,gi,grpSize:fg.pts.length,isFirst:pi===0,
+        cfStart:res.cfStart,cfEnd:res.cfEnd,aliqStart:res.cfEnd,aliqEnd:res.aliqEnd,
+        freezeStart:res.aliqEnd,freezeEnd:res.freezeEnd,
+        restActual,totalAtRoom,pct,maxR,
+        restWarn:restActual<rMin||restActual>rMax,limitWarn:totalAtRoom>maxR});
+    }
+  }
+
+  let html=`<div class="card" style="padding:0;overflow-x:auto"><div style="min-width:660px"><table>
+    <thead><tr><th>Пациент</th><th>Визит</th><th>Забор</th><th>Введение ИП</th><th>Центрифуга</th><th>Разлив</th><th>Морозилка</th><th style="min-width:90px">Путь (${maxR} мин)</th><th>Статус</th></tr></thead><tbody>`;
+  let lastGi=-1;
+  for(const r of rows){
+    if(r.gi!==lastGi){
+      if(lastGi!==-1)html+=`<tr class="grp-sep"><td colspan="9"></td></tr>`;
+      html+=`<tr class="grp-hdr"><td colspan="9">Группа ${r.gi} (${r.grpSize} пац.) — центрифуга ${toT(r.cfStart)}→${toT(r.cfEnd)} · разлив ${toT(r.aliqStart)}→${toT(r.aliqEnd)} · морозилка ~${toT(r.freezeEnd)}</td></tr>`;
+      lastGi=r.gi;
+    }
+    const pct=Math.min(r.pct,100);
+    const restChip=r.restWarn?`<span class="chip chip-warn">${r.restActual} мин</span>`:`<span class="chip">${r.restActual} мин</span>`;
+    const cfCell=r.isFirst?`<span class="chip chip-info">${toT(r.cfStart)}→${toT(r.cfEnd)}</span><div class="sub">гр. ${r.gi}</div>`:`<span style="color:#AAA;font-size:12px">↳ гр. ${r.gi}</span>`;
+    const shiftNote=r.p.shifted?`<div class="sub"><span class="chip-shift">сдвинут +${r.p.shiftedBy} мин</span></div>`:'';
+    const status=r.limitWarn?`<span class="chip chip-err">⚠ Лимит</span>`:r.pct>80?`<span class="chip chip-warn">⚡ Близко</span>`:`<span class="chip chip-ok">✓ Ок</span>`;
+    html+=`<tr>
+      <td style="font-weight:600">${r.p.n||'—'}${shiftNote}</td><td>${r.p.v||'—'}</td>
+      <td><span class="chip">${toT(r.p.sampM)}</span><div class="sub">отстой: ${restChip}</div></td>
+      <td><span class="chip">${r.p.t}</span></td><td>${cfCell}</td>
+      <td><span class="chip">${toT(r.aliqStart)}→${toT(r.aliqEnd)}</span></td>
+      <td><span class="chip">${toT(r.freezeStart)}</span><div class="sub">дедлайн ${toT(r.p.sampM+r.maxR)}</div></td>
+      <td><div class="bar-wrap"><div class="bar-inner" style="width:${pct}%;background:${barCol(r.pct)}"></div></div><div class="sub">${r.totalAtRoom}/${r.maxR} мин (${Math.min(r.pct,100)}%)</div></td>
+      <td>${status}</td>
+    </tr>`;
+  }
+  html+=`</tbody></table></div></div>`;
+  if(shifts.length){
+    html+=`<div class="notice notice-warn"><strong>⚠ Время забора скорректировано:</strong><br>${shifts.map(s=>`• <strong>${s.name}</strong> — забор сдвинут с ${toT(s.origSamp)} на <strong>${toT(s.newSamp)}</strong> (+${s.delta} мин), введение ИП с ${toT(s.origIP)} на <strong>${toT(s.newIP)}</strong>`).join('<br>')}</div>`;
+  }else{
+    html+=`<div class="notice notice-ok">✓ Все пробирки укладываются в лимит без корректировок</div>`;
+  }
+  html+=`<div class="legend"><span><span class="dot" style="background:#1D9E75"></span>до 70%</span><span><span class="dot" style="background:#EF9F27"></span>70–90%</span><span><span class="dot" style="background:#E24B4A"></span>более 90%</span></div>
+  <div class="footer-note">Отстой норма: ${rMin}–${rMax} мин · центрифуга: ${cf} мин · разлив+наклейки: ${aliq} мин · переноска: ${move} мин</div>`;
+  document.getElementById('b-result').innerHTML=html;
+}
+
+/* ════════════════════════════════
+   IP INJECTION PLANNER
+════════════════════════════════ */
+let iPts=[], iNid=1;
+function iAddP(n,iwrs,inj,v){iPts.push({id:iNid++,n:n||'',iwrs:iwrs||'',inj:inj||'',v:v||'',shifted:false,shiftedBy:0});iRender()}
+function iRem(id){iPts=iPts.filter(p=>p.id!==id);iRender()}
+function iUp(id,f,v){const p=iPts.find(p=>p.id===id);if(p)p[f]=v}
+function iRender(){
+  const el=document.getElementById('i-plist');
+  if(!iPts.length){el.innerHTML='<p style="font-size:13px;color:#999;margin:0 0 8px">Нет пациентов</p>';return}
+  el.innerHTML=iPts.map(p=>`<div class="pr-i">
+    <input type="text" placeholder="Иванов И.И." value="${esc(p.n)}" oninput="iUp(${p.id},'n',this.value)">
+    <input type="time" value="${esc(p.iwrs)}" oninput="iUp(${p.id},'iwrs',this.value)" title="Время IWRS">
+    <input type="time" value="${esc(p.inj)}" oninput="iUp(${p.id},'inj',this.value)" title="Время укола">
+    <input type="text" placeholder="В1 / №" value="${esc(p.v)}" oninput="iUp(${p.id},'v',this.value)">
+    <button class="btn-del" onclick="iRem(${p.id})">✕</button>
+  </div>`).join('')
+}
+
+function iTryGroup(grp,wMin,wMax,injDur){
+  const earliestInj=Math.min(...grp.map(p=>p.injM));
+  const latestInj=Math.max(...grp.map(p=>p.injM));
+  const latestIwrs=Math.max(...grp.map(p=>p.iwrsM));
+  const takeMin=Math.max(latestIwrs+1,latestInj+injDur-wMax);
+  const takeMax=earliestInj-wMin;
+  if(takeMin>takeMax)return{ok:false};
+  return{ok:true,takeM:takeMin};
+}
+
+function iCalc(){
+  const wMin=+document.getElementById('i-wmin').value||15;
+  const wMax=+document.getElementById('i-wmax').value||30;
+  const injDur=+document.getElementById('i-inj').value||2;
+  const gwin=+document.getElementById('i-gwin').value||10;
+
+  const valid=iPts.filter(p=>p.iwrs&&p.inj);
+  if(!valid.length){document.getElementById('i-result').innerHTML='<div style="text-align:center;padding:2rem;color:#999;font-size:13px">Укажите время IWRS и время укола</div>';return}
+
+  const sorted=valid.map(p=>({...p,iwrsM:toM(p.iwrs),injM:toM(p.inj),origInjM:toM(p.inj),shifted:false,shiftedBy:0})).sort((a,b)=>a.injM-b.injM);
+
+  const rawGroups=[];let cur=[];
+  for(const p of sorted){
+    if(!cur.length){cur.push(p)}
+    else if(p.injM-cur[0].injM<=gwin){cur.push(p)}
+    else{rawGroups.push(cur);cur=[p]}
+  }
+  if(cur.length)rawGroups.push(cur);
+
+  const finalGroups=[];const shifts=[];
+  for(const grp of rawGroups){
+    const att=iTryGroup(grp,wMin,wMax,injDur);
+    if(att.ok){finalGroups.push({pts:grp,takeM:att.takeM});continue}
+    let remaining=[...grp];
+    while(remaining.length>0){
+      let taken=[];
+      for(let i=0;i<remaining.length;i++){
+        const r2=iTryGroup([...taken,remaining[i]],wMin,wMax,injDur);
+        if(r2.ok){taken=[...taken,remaining[i]]}else{break}
+      }
+      if(taken.length===0){
+        const p=remaining[0];
+        const takeM=p.iwrsM+1;
+        const newInjM=takeM+wMin;
+        if(newInjM!==p.injM){
+          shifts.push({name:p.n||'пациент',origInj:p.origInjM,newInj:newInjM,delta:newInjM-p.origInjM,takeM});
+          p.injM=newInjM;p.inj=toT(newInjM);p.shifted=true;p.shiftedBy=newInjM-p.origInjM;
+        }
+        taken=[remaining[0]];
+        finalGroups.push({pts:taken,takeM});
+      }else{
+        const r3=iTryGroup(taken,wMin,wMax,injDur);
+        finalGroups.push({pts:taken,takeM:r3.takeM});
+      }
+      remaining=remaining.slice(taken.length);
+    }
+  }
+
+  const rows=[];let gi=0;
+  for(const fg of finalGroups){
+    gi++;
+    for(let pi=0;pi<fg.pts.length;pi++){
+      const p=fg.pts[pi];
+      const warmActual=p.injM-fg.takeM;
+      const totalWarm=p.injM+injDur-fg.takeM;
+      const pct=Math.round((warmActual/wMax)*100);
+      rows.push({p,gi,grpSize:fg.pts.length,isFirst:pi===0,
+        takeM:fg.takeM,warmActual,totalWarm,pct,wMin,wMax,injDur,
+        warmWarn:warmActual<wMin||warmActual>wMax,limitWarn:totalWarm>wMax});
+    }
+  }
+
+  let html=`<div class="card" style="padding:0;overflow-x:auto"><div style="min-width:560px"><table>
+    <thead><tr><th>Пациент</th><th>Визит / №</th><th>IWRS</th><th>Достать из холод.</th><th>Укол</th><th style="min-width:100px">Прогрев (${wMin}–${wMax} мин)</th><th>Статус</th></tr></thead><tbody>`;
+  let lastGi=-1;
+  for(const r of rows){
+    if(r.gi!==lastGi){
+      if(lastGi!==-1)html+=`<tr class="grp-sep"><td colspan="7"></td></tr>`;
+      html+=`<tr class="grp-hdr"><td colspan="7">Группа ${r.gi} (${r.grpSize} пац.) — достать из холодильника: <strong>${toT(r.takeM)}</strong></td></tr>`;
+      lastGi=r.gi;
+    }
+    const zoneLeft=Math.round((r.wMin/r.wMax)*100);
+    const zoneW=Math.round(((r.wMax-r.wMin)/r.wMax)*100);
+    const markLeft=Math.min(Math.round((r.warmActual/r.wMax)*100),100);
+    const warmBar=`<div class="wbar"><div class="wbar-zone" style="left:${zoneLeft}%;width:${zoneW}%"></div><div class="wbar-mark" style="left:${markLeft}%"></div></div><div class="sub">${r.warmActual} мин (норма ${r.wMin}–${r.wMax})</div>`;
+    const shiftNote=r.p.shifted?`<div class="sub"><span class="chip-shift">укол сдвинут +${r.p.shiftedBy} мин</span></div>`:'';
+    const takeCell=r.isFirst?`<span class="chip chip-info" style="font-size:13px;padding:4px 10px"><strong>${toT(r.takeM)}</strong></span><div class="sub">гр. ${r.gi}</div>`:`<span style="color:#AAA;font-size:12px">↳ гр. ${r.gi}</span>`;
+    const status=r.limitWarn?`<span class="chip chip-err">⚠ Лимит</span>`:r.warmWarn?`<span class="chip chip-warn">⚡ Проверь</span>`:`<span class="chip chip-ok">✓ Ок</span>`;
+    html+=`<tr>
+      <td style="font-weight:600">${r.p.n||'—'}${shiftNote}</td><td>${r.p.v||'—'}</td>
+      <td><span class="chip">${r.p.iwrs}</span></td><td>${takeCell}</td>
+      <td><span class="chip">${r.p.inj}</span></td>
+      <td>${warmBar}</td><td>${status}</td>
+    </tr>`;
+  }
+  html+=`</tbody></table></div></div>`;
+  if(shifts.length){
+    html+=`<div class="notice notice-warn"><strong>⚠ Время укола скорректировано:</strong><br>${shifts.map(s=>`• <strong>${s.name}</strong> — укол перенесён с ${toT(s.origInj)} на <strong>${toT(s.newInj)}</strong> (+${s.delta} мин), достать из холодильника в ${toT(s.takeM)}`).join('<br>')}</div>`;
+  }else{
+    html+=`<div class="notice notice-ok">✓ Все препараты укладываются в окно прогрева без корректировок</div>`;
+  }
+  html+=`<div class="footer-note">Прогрев норма: ${wMin}–${wMax} мин · укол: ${injDur} мин · окно группировки: ${gwin} мин</div>`;
+  document.getElementById('i-result').innerHTML=html;
+}
+
+/* ── demo data ── */
+bAddP('Иванов И.И.','09:00','В1');
+bAddP('Петрова А.А.','09:10','В1');
+bAddP('Сидоров В.В.','09:15','В1');
+bAddP('Кузнецова Е.Е.','10:30','В2');
+
+iAddP('Иванов И.И.','08:45','09:30','В1 / 004');
+iAddP('Петрова А.А.','08:50','09:40','В1 / 011');
+iAddP('Сидоров В.В.','09:10','10:30','В2 / 007');
+</script>
+</body>
+</html>
