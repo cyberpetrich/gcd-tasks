@@ -48,213 +48,122 @@
     justify-content: space-between;
     margin-bottom: 16px;
   }
-  .app-title {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text3);
-  }
-  .date-badge {
-    font-size: 12px;
-    color: var(--text3);
-    background: var(--bg);
-    padding: 4px 10px;
-    border-radius: 20px;
-  }
+  .app-title { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); }
+  .date-badge { font-size: 12px; color: var(--text3); background: var(--bg); padding: 4px 10px; border-radius: 20px; }
 
-  /* Person tabs scroll */
-  .tabs-scroll {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 14px;
-    scrollbar-width: none;
-  }
+  .tabs-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 14px; scrollbar-width: none; }
   .tabs-scroll::-webkit-scrollbar { display: none; }
-  .tab {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    cursor: pointer;
-    flex-shrink: 0;
-    padding: 2px 4px 0;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-  }
+  .tab { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex-shrink: 0; padding: 2px 4px 0; border-bottom: 2px solid transparent; transition: all 0.2s; }
   .tab.active { border-bottom-color: var(--accent); }
-  .avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    transition: all 0.2s;
-    border: 2px solid transparent;
-  }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; letter-spacing: -0.02em; transition: all 0.2s; border: 2px solid transparent; }
   .tab.active .avatar { border-color: var(--accent); }
   .tab-name { font-size: 10px; color: var(--text3); font-weight: 500; }
   .tab.active .tab-name { color: var(--accent); }
 
-  /* Stats bar */
-  .stats-bar {
-    display: flex;
-    gap: 10px;
-    padding: 14px 20px;
-  }
-  .stat {
-    flex: 1;
-    background: var(--surface);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
+  /* Stats */
+  .stats-bar { display: flex; gap: 10px; padding: 14px 20px; }
+  .stat { flex: 1; background: var(--surface); border-radius: var(--radius-sm); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
   .stat-num { font-size: 22px; font-weight: 700; }
   .stat-num.done { color: var(--done); }
   .stat-num.urgent { color: var(--danger); }
   .stat-label { font-size: 11px; color: var(--text3); font-weight: 500; }
 
   /* Task list */
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text3);
-    padding: 4px 20px 8px;
-  }
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); padding: 4px 20px 8px; }
   .tasks { padding: 0 14px; display: flex; flex-direction: column; gap: 8px; }
 
   .task {
     background: var(--surface);
     border-radius: var(--radius);
     padding: 14px 16px;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    transition: all 0.25s;
     border: 1px solid var(--border);
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
+    transition: all 0.25s;
   }
   .task.urgent { background: var(--urgent-bg); border-color: rgba(224,53,53,0.15); }
   .task.done-task { background: var(--done-bg); border-color: rgba(58,158,111,0.15); opacity: 0.7; }
-  .task:active { transform: scale(0.98); }
 
-  .check-wrap {
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-  .checkmark {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    background: var(--surface);
-  }
-  .task.done-task .checkmark {
-    background: var(--done);
-    border-color: var(--done);
-  }
+  .task-main { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; user-select: none; -webkit-user-select: none; }
+  .task-main:active { opacity: 0.8; }
+
+  .check-wrap { flex-shrink: 0; margin-top: 1px; }
+  .checkmark { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; transition: all 0.2s; background: var(--surface); }
+  .task.done-task .checkmark { background: var(--done); border-color: var(--done); }
   .task.urgent:not(.done-task) .checkmark { border-color: rgba(224,53,53,0.4); }
-  .check-icon {
-    display: none;
-    color: white;
-    font-size: 12px;
-    font-weight: 700;
-  }
+  .check-icon { display: none; color: white; font-size: 12px; font-weight: 700; }
   .task.done-task .check-icon { display: block; }
 
   .task-body { flex: 1; min-width: 0; }
-  .task-text {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.45;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-  .task.done-task .task-text {
-    text-decoration: line-through;
-    color: var(--text3);
-  }
+  .task-text { font-size: 14px; font-weight: 500; line-height: 1.45; color: var(--text); margin-bottom: 6px; }
+  .task.done-task .task-text { text-decoration: line-through; color: var(--text3); }
   .task-footer { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-  .tag {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 6px;
-    white-space: nowrap;
-  }
+  .tag { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
   .tag-proto { background: #EEF3FF; color: #2D5BE3; }
   .tag-deadline { background: #FEF7ED; color: #B45309; }
   .tag-urgent-lbl { background: #FEF2F2; color: #B91C1C; }
 
+  /* Status badge */
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .status-badge:active { transform: scale(0.96); }
+  .status-open { background: #F0F0EE; color: #6B6560; }
+  .status-accepted { background: #EEF3FF; color: #2D5BE3; }
+  .status-inprogress { background: #FEF9EC; color: #9A6700; }
+  .status-closed { background: #EDF7F2; color: #1A7A4A; }
+
+  /* Comment section */
+  .task-comment-area { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); display: none; }
+  .task-comment-area.open { display: block; }
+  .comment-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+  .comment-item { background: var(--bg); border-radius: 8px; padding: 8px 10px; font-size: 12px; line-height: 1.45; color: var(--text2); }
+  .comment-item .comment-meta { font-size: 10px; color: var(--text3); margin-bottom: 2px; font-weight: 600; }
+  .comment-row { display: flex; gap: 6px; }
+  .comment-input {
+    flex: 1; font-family: 'Manrope', sans-serif; font-size: 12px;
+    padding: 7px 10px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); outline: none; resize: none;
+  }
+  .comment-input:focus { border-color: var(--accent); }
+  .comment-send {
+    flex-shrink: 0; width: 34px; height: 34px; border-radius: 8px;
+    background: var(--accent); border: none; color: white; font-size: 16px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .comment-send:active { transform: scale(0.95); }
+
+  .task-actions { display: flex; gap: 8px; margin-top: 8px; align-items: center; flex-wrap: wrap; }
+  .action-btn {
+    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--bg); color: var(--text2);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .action-btn:active { transform: scale(0.96); }
+  .action-btn.comment-toggle { color: var(--accent); border-color: rgba(45,91,227,0.2); background: #EEF3FF; }
+
   /* Bottom nav */
   .bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 430px;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    display: flex;
-    padding: 10px 20px 24px;
-    gap: 8px;
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 430px; background: var(--surface);
+    border-top: 1px solid var(--border); display: flex; padding: 10px 20px 24px; gap: 8px;
   }
   .filter-btn {
-    flex: 1;
-    padding: 10px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: var(--bg);
-    font-family: 'Manrope', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all 0.2s;
+    flex: 1; padding: 8px 4px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+    background: var(--bg); font-family: 'Manrope', sans-serif; font-size: 11px; font-weight: 600;
+    color: var(--text2); cursor: pointer; transition: all 0.2s; text-align: center;
   }
-  .filter-btn.active {
-    background: var(--accent);
-    color: white;
-    border-color: var(--accent);
-  }
+  .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
   .filter-btn:active { transform: scale(0.97); }
 
   /* Toast */
   .toast {
-    position: fixed;
-    bottom: 90px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: #1A1A1A;
-    color: white;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 10px 20px;
-    border-radius: 30px;
-    opacity: 0;
-    transition: all 0.3s;
-    pointer-events: none;
-    white-space: nowrap;
-    z-index: 200;
+    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #1A1A1A; color: white; font-size: 13px; font-weight: 600;
+    padding: 10px 20px; border-radius: 30px; opacity: 0; transition: all 0.3s;
+    pointer-events: none; white-space: nowrap; z-index: 200;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
   .empty { text-align: center; color: var(--text3); font-size: 14px; padding: 40px 20px; }
 </style>
 </head>
@@ -263,98 +172,143 @@
 <div class="header">
   <div class="header-top">
     <span class="app-title">GCD Tasks</span>
-    <span class="date-badge">29.04.2026</span>
+    <span class="date-badge">13.05.2026</span>
   </div>
   <div class="tabs-scroll" id="tabs"></div>
 </div>
 
 <div class="stats-bar" id="statsBar"></div>
-
 <div id="sectionLabel" class="section-label"></div>
 <div class="tasks" id="taskList"></div>
 
 <div class="bottom-nav">
-  <button class="filter-btn active" onclick="setFilter('all', this)">Все</button>
-  <button class="filter-btn" onclick="setFilter('urgent', this)">Срочные 🔴</button>
-  <button class="filter-btn" onclick="setFilter('pending', this)">Открытые</button>
-  <button class="filter-btn" onclick="setFilter('done', this)">Готово ✓</button>
+  <button class="filter-btn active" onclick="setFilter('all',this)">Все</button>
+  <button class="filter-btn" onclick="setFilter('urgent',this)">🔴</button>
+  <button class="filter-btn" onclick="setFilter('pending',this)">Открытые</button>
+  <button class="filter-btn" onclick="setFilter('accepted',this)">Принято</button>
+  <button class="filter-btn" onclick="setFilter('inprogress',this)">В работе</button>
+  <button class="filter-btn" onclick="setFilter('done',this)">Закрытые</button>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const people = [
+// ─── СТАТУСЫ ───────────────────────────────────────────────
+const STATUSES = [
+  { key:'open',       label:'Открыта',         cls:'status-open'       },
+  { key:'accepted',   label:'Принята в работу', cls:'status-accepted'   },
+  { key:'inprogress', label:'В работе',         cls:'status-inprogress' },
+  { key:'closed',     label:'Закрыта',          cls:'status-closed'     },
+];
 
+// ─── ДАННЫЕ ────────────────────────────────────────────────
+const people = [
   { initials:"АП", name:"Александра Петрова", color:"#D6E8F7", textColor:"#1A5A9A",
     tasks:[
-      {t:"Заполнить журнал КИ совместно с Настей",p:"Биннофарм ЖК16",d:"",u:false},
-      {t:"Реестр КИ — обновлять еженедельно по пн",p:"",d:"Еженедельно",u:false},
-      {t:"Трудоустройство Анастасии в ГП 112",p:"РАФАМИН ГП112",d:"08.2026",u:false},
-      {t:"Подписать договор аренды с Гурчиным — нет печатей, доставить после отпуска",p:"GP40331 ГП3 5ДПО",d:"",u:false},
-      {t:"Согласовать ВЗ",p:"MMH-407-007 Close-out ГП4",d:"",u:false},
-      {t:"Подготовить документы к архивации к визиту завершения",p:"MMH-407-007 Close-out ГП4",d:"",u:false},
-      {t:"Доехать до Напольской",p:"GNR107-CRC01 СГМУ",d:"07.05",u:true},
+      {t:"GNR107-CRC01 | СЗГМУ — Доехать до Напольской, перенос на 15.05 — нужна сумма по последнему акту для GCD", p:"GNR107-CRC01 СЗГМУ", d:"15.05", u:true },
+      {t:"GP40131 | ГП4 — Пояснительная записка в файл по журналам с БО",              p:"GP40131 ГП4",        d:"20.05", u:false},
+      {t:"ММН-407-007 | 3ГП — Согласовать ВЗ",                                         p:"ММН-407-007 3ГП",    d:"",      u:false},
+      {t:"ММН-407-007 | 3ГП — Подготовить документы к архивации к визиту завершения",  p:"ММН-407-007 3ГП",    d:"",      u:false},
+      {t:"ММН-407-007 | 4ГП — Согласовать ВЗ",                                         p:"ММН-407-007 4ГП",    d:"",      u:false},
+      {t:"ММН-407-007 | 4ГП — Подготовить документы к архивации к визиту завершения",  p:"ММН-407-007 4ГП",    d:"",      u:false},
+      {t:"ММН-407-007 | 4ГП — Провести ревизию архивации протоколов с 2023",           p:"ММН-407-007 4ГП",    d:"",      u:false},
+      {t:"ММН-407-007 | 4ГП — Акты переподписаны, отправить монитору",                 p:"ММН-407-007 4ГП",    d:"",      u:false},
+      {t:"PHS-DEX-1825 | ЖК16 — Получить акты на оплату от монитора",                  p:"PHS-DEX-1825 ЖК16",  d:"",      u:false},
+      {t:"Мабскейл PERT III | НОКОД — Запланировать СВ на июнь",                       p:"PERT III НОКОД",     d:"",      u:false},
+      {t:"Санофи/Лиганд — Узнать у Милы контакты проектного менеджера",                p:"Санофи/Лиганд",      d:"",      u:false},
+      {t:"MMH-407-012 | ГП112 — Трудоустройство Анастасии в ГП112 в августе",          p:"MMH-407-012 ГП112",  d:"08.2026",u:false},
+      {t:"NISNORM870 | ЖК16 — Заполнить журнал КИ совместно с АнН",                    p:"NISNORM870 ЖК16",    d:"",      u:false},
+      {t:"Задача №14 — Беседа с Абдуллиным, Новоселовым / встреча с Комаровой и Курбановской", p:"", d:"19.05", u:false},
     ]},
   { initials:"АН", name:"Александра Наумова", color:"#D5F0E8", textColor:"#0A6644",
     tasks:[
-      {t:"Набрать 1 пациента до конца апреля",p:"MMH-407-010 РАФАМИН ДЕТИ ГП4",d:"30.04",u:true},
-      {t:"В мае спросить про оплату АН",p:"MMH-407-010 РАФАМИН ДЕТИ ГП4",d:"",u:false},
-      {t:"Согласовать ВЗ",p:"MMH-407-007 Close-out АБИА",d:"",u:false},
-      {t:"Подготовить документы к архивации к визиту завершения",p:"MMH-407-007 Close-out АБИА",d:"",u:false},
-      {t:"Уточнить, где деньги",p:"MMH-407-007 Close-out АБИА",d:"",u:false},
-      {t:"Сделать отдельную папку на ДПО в папке ГП 4 — ПРОСРОЧЕНО",p:"",d:"18.03",u:true},
-      {t:"Запланировать вывоз актов из центра АН после майских",p:"РАФАМИН ДЕТИ ГП4",d:"",u:false},
-      {t:"Подготовить документы на команду, оборудование, архив к проверке",p:"BCD-261-4/ULTRAMARINE",d:"",u:false},
-      {t:"Получить сертификаты поверок на оборудование центра АН",p:"BCD-261-4/ULTRAMARINE",d:"",u:false},
+      {t:"MIT-005/1 | НОКБ — Подписать договор между спонсором и ИП Окунев + ДС к договору, 19-20 мая приедет с монитором", p:"MIT-005/1 НОКБ", d:"19.05", u:true },
+      {t:"MIT-005/1 | НОКБ — Организовать вызов такси для пациентов",                  p:"MIT-005/1 НОКБ",     d:"",      u:false},
+      {t:"GNR068-UC03 | НОКБ — Получить поверки/ТО на используемое оборудование к МВ", p:"GNR068-UC03 НОКБ",   d:"",      u:false},
+      {t:"GNR068-UC03 | НОКБ — Пояснительная записка по лаб нормам — дедлайн перенесён на 20.05", p:"GNR068-UC03 НОКБ", d:"20.05", u:false},
+      {t:"ММН-407-007 | 112ГП — Согласовать ВЗ",                                       p:"ММН-407-007 112ГП",  d:"",      u:false},
+      {t:"ММН-407-007 | 112ГП — Подготовить документы к архивации к визиту завершения",p:"ММН-407-007 112ГП",  d:"",      u:false},
+      {t:"ММН-407-007 | АБИА — Согласовать ВЗ",                                        p:"ММН-407-007 АБИА",   d:"",      u:false},
+      {t:"ММН-407-007 | АБИА — Подготовить документы к архивации к визиту завершения", p:"ММН-407-007 АБИА",   d:"",      u:false},
+      {t:"ММН-407-007 | АБИА — Уточнить, где деньги?",                                 p:"ММН-407-007 АБИА",   d:"",      u:false},
+      {t:"BCD-261-4/ULTRAMARINE | НОКБ — Получить сертификаты поверок на оборудование",p:"BCD-261-4 НОКБ",     d:"",      u:false},
+      {t:"NISNORM870 | ЖК16 — Подготовить смету к 20.05",                              p:"NISNORM870 ЖК16",    d:"20.05", u:false},
+      {t:"Задача №15 — Подготовить отчётные документы по Деглюдеку для казначейства",  p:"",                   d:"27.05", u:false},
     ]},
   { initials:"АнО", name:"Андрей Олехвер", color:"#FAE0E8", textColor:"#8B1A3A",
     tasks:[
-      {t:"Привлечение ЛОКБ в качестве реферала (ПБ)",p:"MIT-005/1 МЮ",d:"",u:false},
-
-      {t:"Согласовать МВ после рандомизации 2 пациента",p:"MIT-005/1 МЮ",d:"",u:false},
-      {t:"Рандомизировать 2 пациента",p:"MIT-005/1 МЮ",d:"05.05",u:true},
-      {t:"Укомплектовать карты: ПД, отбивки, анализы, переложить в вместительные папки",p:"GP30931 МЮ",d:"11.05",u:false},
-      {t:"Получить акты на оплату АнО",p:"MMH-407-010 РАФАМИН ДЕТИ ГП3",d:"",u:false},
-      {t:"Акт на оплату после МВ — напомнить монитору к 06.05, обновить статус",p:"GP40331 ГП3 5ДПО",d:"06.05",u:false},
-      {t:"Связаться с CRO — Фармасофт",p:"Потенциальные",d:"",u:false},
-      {t:"Запланировать встречу с Тимуром, АО, СЛ на неделе с 06.05",p:"",d:"06.05",u:false},
+      {t:"MIT-005/1 | MU — Рандомизировать 2 пациента, предварительно 19.05.2026",     p:"MIT-005/1 MU",       d:"19.05", u:true },
+      {t:"GP30931 | ГП3 — Назначить МВ на июнь",                                       p:"GP30931 ГП3",        d:"",      u:false},
+      {t:"ММН-407-010 | ГП3 — Получить акты на оплату",                                p:"ММН-407-010 ГП3",    d:"",      u:false},
+      {t:"TSP-062025 — Сделать раздел в трекере по подаркам, выдававшимся детям",      p:"TSP-062025",         d:"20.05", u:false},
+      {t:"TSP-062025 — Прислать СЛ ЭКГ пациентов",                                    p:"TSP-062025",         d:"20.05", u:false},
+      {t:"Задача №13 — Наставничество Тимура в рамках его деятельности помощника координатора", p:"", d:"", u:false},
     ]},
   { initials:"АО", name:"Александр Окунев", color:"#E8E6FC", textColor:"#3C2FA0",
     tasks:[
-      {t:"Обновить статус оплаты по актам к 06.05",p:"РАФАМИН ДЕТИ ГП4",d:"06.05",u:true},
-      {t:"Перенос ИЦ с ДПО 5 в ДПО 24 — встреча с Гурчиным после майских",p:"TSP-062025 ГП3",d:"",u:false},
-      {t:"Найти врача-координатора в штат",p:"BCD-085-16 ETA-KIDS Кемерово",d:"",u:false},
-      {t:"Связаться с CRO — Фармасофт",p:"Потенциальные",d:"",u:false},
-      {t:"Связаться со спонсором — найти контакт",p:"АО Татхимфармпрепараты",d:"",u:false},
-      {t:"Запланировать встречу с Тимуром, АнО, СЛ на неделе с 06.05",p:"",d:"06.05",u:false},
+      {t:"GP40261 | ГП4 — Выплата врачам до 08.05",                                    p:"GP40261 ГП4",        d:"08.05", u:true },
+      {t:"Задача №14 — Беседа с Абдуллиным, Новоселовым / встреча с Комаровой и Курбановской", p:"", d:"19.05", u:false},
     ]},
   { initials:"МФ", name:"Мария Федорова", color:"#F0E6FF", textColor:"#5B21B6",
-    tasks:[]},
+    tasks:[
+      {t:"Задача №14 — Беседа с Абдуллиным, Новоселовым / встреча с Комаровой и Курбановской", p:"", d:"19.05", u:false},
+    ]},
   { initials:"ТВ", name:"Тимур Величков", color:"#FAE8C0", textColor:"#7A4A08",
-    tasks:[]},
+    tasks:[
+      {t:"Плановая архивация",                                                          p:"",                   d:"",      u:false},
+    ]},
   { initials:"СЛ", name:"Светлана Лебедкина", color:"#DDF0C0", textColor:"#2E6A10",
     tasks:[
-      {t:"Статус СЛ+ПБ: проверка ФИСов, карт МИС, ПД, процессов",p:"GP30931 ГП3 Тирзепатид",d:"",u:false},
+      {t:"MIT-005/1 | MU — Проверить ФИ перед МВ",                                     p:"MIT-005/1 MU",       d:"",      u:false},
+      {t:"NISNORM870 | ЖК16 — Провести ВКК 21.05",                                     p:"NISNORM870 ЖК16",    d:"21.05", u:false},
+    ]},
+  { initials:"АнН", name:"Анастасия Новикова", color:"#FFE8D6", textColor:"#8B3A0A",
+    tasks:[
+      {t:"NISNORM870 | ЖК16 — Заполнить журнал КИ совместно с АП",                     p:"NISNORM870 ЖК16",    d:"",      u:false},
     ]},
   { initials:"ВСЕ", name:"Вся команда", color:"#E8E8E4", textColor:"#4A4A44",
     tasks:[
-      {t:"Работа с файловым хранилищем: сбор договоров и актов (оригиналы СМО → АН в МЮ)",p:"",d:"",u:false},
-      {t:"Трекеры пациентов в формате Excel — стандартизировать",p:"",d:"",u:false},
-      {t:"Проверить наименования и форматы документов в общей папке (№ протокола + название + дата)",p:"",d:"28.04",u:true},
+      {t:"Работа с файловым хранилищем: сбор договоров и актов (оригиналы СМО → АН в МЮ)", p:"",              d:"",      u:false},
+      {t:"Трекеры пациентов в формате Excel — стандартизировать",                       p:"",                   d:"",      u:false},
+      {t:"Проверить наименования и форматы документов в общей папке (№ протокола + название + дата)", p:"",    d:"28.04", u:false},
     ]},
 ];
 
 let currentPerson = 0;
 let currentFilter = 'all';
-const doneKey = () => `gcd_done_${currentPerson}`;
+
+// ─── STORAGE HELPERS ───────────────────────────────────────
+function storeKey(type) { return `gcd_${type}_${currentPerson}`; }
 
 function getDone() {
-  try { return JSON.parse(localStorage.getItem(doneKey()) || '[]'); } catch { return []; }
+  try { return JSON.parse(localStorage.getItem(storeKey('done')) || '[]'); } catch { return []; }
 }
 function saveDone(arr) {
-  try { localStorage.setItem(doneKey(), JSON.stringify(arr)); } catch {}
+  try { localStorage.setItem(storeKey('done'), JSON.stringify(arr)); } catch {}
 }
 
+function getStatuses() {
+  try { return JSON.parse(localStorage.getItem(storeKey('statuses')) || '{}'); } catch { return {}; }
+}
+function saveStatuses(obj) {
+  try { localStorage.setItem(storeKey('statuses'), JSON.stringify(obj)); } catch {}
+}
+
+function getComments() {
+  try { return JSON.parse(localStorage.getItem(storeKey('comments')) || '{}'); } catch { return {}; }
+}
+function saveComments(obj) {
+  try { localStorage.setItem(storeKey('comments'), JSON.stringify(obj)); } catch {}
+}
+
+function getOpenComments() {
+  try { return JSON.parse(localStorage.getItem(storeKey('open_comments')) || '[]'); } catch { return []; }
+}
+function saveOpenComments(arr) {
+  try { localStorage.setItem(storeKey('open_comments'), JSON.stringify(arr)); } catch {}
+}
+
+// ─── TOAST ────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -362,12 +316,71 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2000);
 }
 
+// ─── ACTIONS ──────────────────────────────────────────────
 function toggleTask(idx) {
   const done = getDone();
   const pos = done.indexOf(idx);
-  if (pos === -1) { done.push(idx); showToast('✓ Отмечено выполненным'); }
-  else { done.splice(pos, 1); showToast('Отмечено открытым'); }
+  const statuses = getStatuses();
+  if (pos === -1) {
+    done.push(idx);
+    statuses[idx] = 'closed';
+    showToast('✓ Отмечено выполненным');
+  } else {
+    done.splice(pos, 1);
+    statuses[idx] = 'open';
+    showToast('Отмечено открытым');
+  }
   saveDone(done);
+  saveStatuses(statuses);
+  render();
+}
+
+function cycleStatus(idx, event) {
+  event.stopPropagation();
+  const statuses = getStatuses();
+  const current = statuses[idx] || 'open';
+  const keys = STATUSES.map(s => s.key);
+  const nextIdx = (keys.indexOf(current) + 1) % keys.length;
+  statuses[idx] = keys[nextIdx];
+  // если закрыта — дублируем в done
+  const done = getDone();
+  if (statuses[idx] === 'closed') {
+    if (!done.includes(idx)) done.push(idx);
+  } else {
+    const pos = done.indexOf(idx);
+    if (pos !== -1) done.splice(pos, 1);
+  }
+  saveDone(done);
+  saveStatuses(statuses);
+  showToast('Статус: ' + STATUSES[nextIdx].label);
+  render();
+}
+
+function toggleCommentArea(idx, event) {
+  event.stopPropagation();
+  const open = getOpenComments();
+  const pos = open.indexOf(idx);
+  if (pos === -1) open.push(idx); else open.splice(pos, 1);
+  saveOpenComments(open);
+  render();
+}
+
+function addComment(idx) {
+  const input = document.getElementById(`ci_${currentPerson}_${idx}`);
+  const text = (input?.value || '').trim();
+  if (!text) return;
+  const comments = getComments();
+  if (!comments[idx]) comments[idx] = [];
+  const now = new Date();
+  const ts = now.toLocaleDateString('ru-RU', {day:'2-digit',month:'2-digit'}) + ' ' +
+             now.toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'});
+  comments[idx].push({ text, ts });
+  saveComments(comments);
+  if (input) input.value = '';
+  render();
+  // keep comment area open
+  const open = getOpenComments();
+  if (!open.includes(idx)) { open.push(idx); saveOpenComments(open); }
   render();
 }
 
@@ -378,9 +391,13 @@ function setFilter(f, btn) {
   render();
 }
 
+// ─── RENDER ───────────────────────────────────────────────
 function render() {
   const p = people[currentPerson];
   const done = getDone();
+  const statuses = getStatuses();
+  const comments = getComments();
+  const openComments = getOpenComments();
   const tasks = p.tasks;
 
   // Stats
@@ -392,40 +409,71 @@ function render() {
     <div class="stat"><span class="stat-num urgent">${urgent}</span><span class="stat-label">Срочных</span></div>
   `;
 
-  let filtered = tasks.map((t, i) => ({ ...t, idx: i, isDone: done.includes(i) }));
-  if (currentFilter === 'urgent') filtered = filtered.filter(t => t.u);
-  if (currentFilter === 'pending') filtered = filtered.filter(t => !t.isDone);
-  if (currentFilter === 'done') filtered = filtered.filter(t => t.isDone);
+  let filtered = tasks.map((t, i) => ({ ...t, idx: i, isDone: done.includes(i), statusKey: statuses[i] || 'open' }));
+  if (currentFilter === 'urgent')     filtered = filtered.filter(t => t.u);
+  if (currentFilter === 'pending')    filtered = filtered.filter(t => t.statusKey === 'open');
+  if (currentFilter === 'accepted')   filtered = filtered.filter(t => t.statusKey === 'accepted');
+  if (currentFilter === 'inprogress') filtered = filtered.filter(t => t.statusKey === 'inprogress');
+  if (currentFilter === 'done')       filtered = filtered.filter(t => t.statusKey === 'closed');
 
-  const labels = { all: 'Все задачи', urgent: 'Срочные задачи', pending: 'Открытые задачи', done: 'Выполненные' };
+  const labels = { all:'Все задачи', urgent:'Срочные 🔴', pending:'Открытые', accepted:'Принято в работу', inprogress:'В работе', done:'Закрытые' };
   document.getElementById('sectionLabel').textContent = `${labels[currentFilter]} · ${filtered.length}`;
 
   const list = document.getElementById('taskList');
-  if (filtered.length === 0) {
-    list.innerHTML = `<div class="empty">Нет задач в этом разделе</div>`;
-    return;
-  }
+  if (!filtered.length) { list.innerHTML = `<div class="empty">Нет задач в этом разделе</div>`; return; }
 
-  list.innerHTML = filtered.map(task => `
-    <div class="task ${task.u && !task.isDone ? 'urgent' : ''} ${task.isDone ? 'done-task' : ''}"
-         onclick="toggleTask(${task.idx})">
-      <div class="check-wrap">
-        <div class="checkmark"><span class="check-icon">✓</span></div>
+  list.innerHTML = filtered.map(task => {
+    const statusKey = statuses[task.idx] || 'open';
+    const statusObj = STATUSES.find(s => s.key === statusKey) || STATUSES[0];
+    const taskComments = comments[task.idx] || [];
+    const isCommentOpen = openComments.includes(task.idx);
+    const commentCount = taskComments.length;
+
+    const commentListHtml = taskComments.map(c => `
+      <div class="comment-item">
+        <div class="comment-meta">${c.ts}</div>
+        ${c.text}
       </div>
-      <div class="task-body">
-        <div class="task-text">${task.t}</div>
-        <div class="task-footer">
-          <span class="tag tag-proto">${task.p}</span>
-          ${task.d ? `<span class="tag ${task.u && !task.isDone ? 'tag-urgent-lbl' : 'tag-deadline'}">${task.d}</span>` : ''}
+    `).join('');
+
+    return `
+    <div class="task ${task.u && !task.isDone ? 'urgent' : ''} ${task.isDone ? 'done-task' : ''}">
+      <div class="task-main" onclick="toggleTask(${task.idx})">
+        <div class="check-wrap">
+          <div class="checkmark"><span class="check-icon">✓</span></div>
+        </div>
+        <div class="task-body">
+          <div class="task-text">${task.t}</div>
+          <div class="task-footer">
+            ${task.p ? `<span class="tag tag-proto">${task.p}</span>` : ''}
+            ${task.d ? `<span class="tag ${task.u && !task.isDone ? 'tag-urgent-lbl' : 'tag-deadline'}">${task.d}</span>` : ''}
+          </div>
         </div>
       </div>
-    </div>
-  `).join('');
+      <div class="task-actions">
+        <span class="status-badge ${statusObj.cls}" onclick="cycleStatus(${task.idx}, event)">
+          ${statusObj.label}
+        </span>
+        <button class="action-btn comment-toggle" onclick="toggleCommentArea(${task.idx}, event)">
+          💬 ${commentCount > 0 ? commentCount : 'Комментарий'}
+        </button>
+      </div>
+      <div class="task-comment-area ${isCommentOpen ? 'open' : ''}">
+        ${commentListHtml ? `<div class="comment-list">${commentListHtml}</div>` : ''}
+        <div class="comment-row">
+          <textarea class="comment-input" id="ci_${currentPerson}_${task.idx}" rows="1"
+            placeholder="Добавить комментарий..."
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();addComment(${task.idx})}"></textarea>
+          <button class="comment-send" onclick="addComment(${task.idx})">↑</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
+// ─── TABS ─────────────────────────────────────────────────
 function buildTabs() {
-  const tabs = document.getElementById('tabs');
-  tabs.innerHTML = people.map((p, i) => `
+  document.getElementById('tabs').innerHTML = people.map((p, i) => `
     <div class="tab ${i === 0 ? 'active' : ''}" onclick="selectPerson(${i})">
       <div class="avatar" style="background:${p.color};color:${p.textColor}">${p.initials}</div>
       <span class="tab-name">${p.initials}</span>
@@ -435,7 +483,9 @@ function buildTabs() {
 
 function selectPerson(i) {
   currentPerson = i;
+  currentFilter = 'all';
   document.querySelectorAll('.tab').forEach((t, idx) => t.classList.toggle('active', idx === i));
+  document.querySelectorAll('.filter-btn').forEach((b, idx) => b.classList.toggle('active', idx === 0));
   render();
 }
 
